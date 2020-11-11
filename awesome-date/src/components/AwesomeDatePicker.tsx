@@ -6,6 +6,7 @@ import styled from "styled-components";
 const StyledContainer = styled.div`
   box-sizing: border-box;
   font-size: 2.5rem;
+  line-height: 3rem;
   font-weight: bolder;
   color: blue;
   height: 20rem;
@@ -36,16 +37,17 @@ const StyledList = styled.ul`
   margin: 0 0.5rem;
   height: 100%;
   text-align: center;
+  scroll-behavior: smooth;
   -ms-overflow-style: none;
   scrollbar-width: none;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
 
   :first-child {
-    color: black;
+    color: #333;
   }
   :last-child {
-    color: #3b3bff;
+    color: #5252ff;
   }
 
   ::-webkit-scrollbar {
@@ -60,6 +62,7 @@ const StyledListItem = styled.li<{ faded?: boolean; rotate?: number }>`
     rotate ? (rotate < 0 ? "80% center" : "20% center") : "center"};
   transition: opacity 0.4s ease, transform 0.4s ease;
   scroll-snap-align: center;
+  cursor: pointer;
 `;
 export interface AwesomeDatePickerProps {
   minYear?: number;
@@ -96,7 +99,7 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
 
   const whichItem = (scrollTop: number): number => {
     if (scrollTop < 24) return 0;
-    return Math.round((scrollTop - 24) / 47);
+    return Math.round((scrollTop - 24) / 48);
   };
   const yearsList = Array.from(
     { length: maxYear - minYear + 1 },
@@ -137,6 +140,11 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
     setSelectedYear(yearsList[item]);
   };
 
+  const handleScrollTo = (e: any) => {
+    const parentEl = e.target.parentElement;
+    parentEl.scrollTop = e.target.dataset.value * 48 + 24;
+  };
+
   const calculateRotation = (elValue: number, selectedValue: number) =>
     elValue === selectedValue
       ? 0
@@ -147,9 +155,11 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
   return (
     <StyledContainer>
       <StyledList onScroll={debounce(handleScrollDays, 100)}>
-        {daysList.map((el) => (
+        {daysList.map((el, index) => (
           <StyledListItem
             faded={el !== selectedDay}
+            data-value={index}
+            onClick={handleScrollTo}
             rotate={calculateRotation(el, selectedDay)}
             key={"day-" + el}
           >
@@ -161,6 +171,8 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
         {monthList.map((el, index) => (
           <StyledListItem
             key={"month-" + el}
+            data-value={index}
+            onClick={handleScrollTo}
             faded={index !== selectedMonth}
             rotate={calculateRotation(index, selectedMonth)}
           >
@@ -169,9 +181,11 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
         ))}
       </StyledList>
       <StyledList onScroll={debounce(handleScrollYear, 100)}>
-        {yearsList.map((el) => (
+        {yearsList.map((el, index) => (
           <StyledListItem
             key={"year-" + el}
+            data-value={index}
+            onClick={handleScrollTo}
             faded={el !== selectedYear}
             rotate={calculateRotation(el, selectedYear)}
           >
