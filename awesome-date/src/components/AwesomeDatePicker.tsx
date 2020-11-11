@@ -2,6 +2,7 @@ import * as React from "react";
 import { getDaysInMonth } from "date-fns";
 import { debounce } from "lodash";
 import styled from "styled-components";
+import { EventType } from "@testing-library/react";
 
 const StyledContainer = styled.div`
   box-sizing: border-box;
@@ -126,23 +127,27 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
     "Dec",
   ];
 
-  const handleScrollDays = (e: any) => {
-    const item = whichItem(e.target.scrollTop);
+  const handleScrollDays = (e: React.UIEvent<HTMLUListElement, UIEvent>) => {
+    const target = e.target as HTMLUListElement;
+    const item = whichItem(target.scrollTop);
     setSelectedDay(daysList[item]);
   };
-  const handleScrollMonth = (e: any) => {
-    const item = whichItem(e.target.scrollTop);
-    // setCurrentMonthDays(getDaysInMonth(new Date(selectedYear, item)));
+  const handleScrollMonth = (e: React.UIEvent<HTMLUListElement, UIEvent>) => {
+    const target = e.target as HTMLUListElement;
+    const item = whichItem(target.scrollTop);
     setSelectedMonth(item);
   };
-  const handleScrollYear = (e: any) => {
-    const item = whichItem(e.target.scrollTop);
+  const handleScrollYear = (e: React.UIEvent<HTMLUListElement, UIEvent>) => {
+    const target = e.target as HTMLUListElement;
+    const item = whichItem(target.scrollTop);
     setSelectedYear(yearsList[item]);
   };
 
-  const handleScrollTo = (e: any) => {
-    const parentEl = e.target.parentElement;
-    parentEl.scrollTop = e.target.dataset.value * 48 + 24;
+  const handleScrollTo = (e: React.MouseEvent<HTMLElement>) => {
+    const target = e.target as HTMLLIElement;
+    const parentEl = target.parentElement;
+    if (!parentEl || !target.dataset.value) return;
+    parentEl.scrollTop = parseInt(target.dataset.value) * 48 + 24;
   };
 
   const calculateRotation = (elValue: number, selectedValue: number) =>
