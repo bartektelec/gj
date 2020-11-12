@@ -85,7 +85,6 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
   lineRotation = 20,
   onChange,
 }) => {
-  const [isMouseDown, setMouseDown] = React.useState<boolean>(false);
   const [selectedDay, setSelectedDay] = React.useState<number>(1);
   const [selectedMonth, setSelectedMonth] = React.useState<number>(0);
   const [selectedYear, setSelectedYear] = React.useState<number>(minYear);
@@ -165,21 +164,11 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
       ? Math.min((selectedValue - elValue) * lineRotation, lineRotation * 3)
       : -Math.min((elValue - selectedValue) * lineRotation, lineRotation * 3);
 
-  const handleMouseMove = (e: any) => {
-    e.preventDefault();
-    if (isMouseDown) {
-      console.log(e.nativeEvent.Y);
-    }
-  };
   return (
-    <StyledContainer
-      onMouseDown={() => setMouseDown(true)}
-      onMouseUp={() => setMouseDown(false)}
-    >
+    <StyledContainer>
       <StyledList onScroll={debounce(handleScrollDays, 350)}>
         {daysList.map((el, index) => (
           <StyledListItem
-            onMouseMove={handleMouseMove}
             data-value={index}
             onClick={handleScrollTo}
             rotateY={-10}
