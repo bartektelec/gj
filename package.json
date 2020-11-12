@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "homepage" : "https://bartektelec.github.io/gj",
   "scripts": {
     "predeploy": "cd awesome-date/ && npm run build",
     "deploy": "gh-pages -d awesome-date/build",
@@ -18,7 +19,6 @@
   "bugs": {
     "url": "https://github.com/bartektelec/gj/issues"
   },
-  "homepage": "https://github.com/bartektelec/gj#readme",
   "devDependencies": {
     "gh-pages": "^3.1.0"
   }
