@@ -16,6 +16,13 @@ const StyledContainer = styled.div`
   align-items: center;
   position: relative;
   perspective: 300px;
+  perspective-origin: center center;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 17%,
+    white,
+    transparent 83%
+  );
   ::before {
     z-index: -1;
     display: block;
@@ -25,7 +32,7 @@ const StyledContainer = styled.div`
     left: 0;
     right: 0;
     height: calc(3.5rem);
-    background-color: #ececec;
+    background-color: #dddddd;
     border-top: 2px solid lightgray;
     border-bottom: 2px solid lightgray;
   }
@@ -58,7 +65,6 @@ const StyledList = styled.ul`
 `;
 
 const StyledListItem = styled.li<{ faded?: boolean; rotate?: number }>`
-  /* opacity: ${({ rotate }) => (rotate ? 1 - Math.abs(rotate) / 100 : 1)}; */
   transform: rotateX(${({ rotate }) => rotate + "deg" || 0});
   transform-origin: ${({ rotate }) =>
     rotate ? (rotate < 0 ? "80% center" : "20% center") : "center"};
@@ -76,7 +82,7 @@ export interface AwesomeDatePickerProps {
 const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
   minYear = 1950,
   maxYear = 2050,
-  lineRotation = 20,
+  lineRotation = 25,
   onChange,
 }) => {
   const [selectedDay, setSelectedDay] = React.useState<number>(1);
