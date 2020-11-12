@@ -15,6 +15,7 @@ const StyledContainer = styled.div`
   justify-content: stretch;
   align-items: center;
   position: relative;
+  perspective: 300px;
   ::before {
     z-index: -1;
     display: block;
@@ -57,7 +58,7 @@ const StyledList = styled.ul`
 `;
 
 const StyledListItem = styled.li<{ faded?: boolean; rotate?: number }>`
-  opacity: ${({ rotate }) => (rotate ? 1 - Math.abs(rotate) / 100 : 1)};
+  /* opacity: ${({ rotate }) => (rotate ? 1 - Math.abs(rotate) / 100 : 1)}; */
   transform: rotateX(${({ rotate }) => rotate + "deg" || 0});
   transform-origin: ${({ rotate }) =>
     rotate ? (rotate < 0 ? "80% center" : "20% center") : "center"};
@@ -154,8 +155,8 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
     elValue === selectedValue
       ? 0
       : elValue < selectedValue
-      ? -Math.min((selectedValue - elValue) * lineRotation, lineRotation * 3)
-      : Math.min((elValue - selectedValue) * lineRotation, lineRotation * 3);
+      ? Math.min((selectedValue - elValue) * lineRotation, lineRotation * 3)
+      : -Math.min((elValue - selectedValue) * lineRotation, lineRotation * 3);
 
   return (
     <StyledContainer>
