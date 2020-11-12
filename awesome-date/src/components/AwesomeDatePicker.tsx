@@ -82,7 +82,7 @@ export interface AwesomeDatePickerProps {
 const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
   minYear = 1950,
   maxYear = 2050,
-  lineRotation = 25,
+  lineRotation = 20,
   onChange,
 }) => {
   const [selectedDay, setSelectedDay] = React.useState<number>(1);
