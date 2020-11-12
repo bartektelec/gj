@@ -2,7 +2,6 @@ import * as React from "react";
 import { getDaysInMonth } from "date-fns";
 import { debounce } from "lodash";
 import styled from "styled-components";
-import { EventType } from "@testing-library/react";
 
 const StyledContainer = styled.div`
   box-sizing: border-box;
