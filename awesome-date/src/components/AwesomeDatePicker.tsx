@@ -1,7 +1,7 @@
-import * as React from "react";
-import { getDaysInMonth } from "date-fns";
-import { debounce } from "lodash";
-import styled from "styled-components";
+import * as React from 'react';
+import { getDaysInMonth } from 'date-fns';
+import { debounce } from 'lodash';
+import styled from 'styled-components';
 
 const StyledContainer = styled.div`
   box-sizing: border-box;
@@ -25,7 +25,7 @@ const StyledContainer = styled.div`
   ::before {
     z-index: -1;
     display: block;
-    content: "";
+    content: '';
     position: absolute;
     top: calc((20rem - 3.5rem) / 2);
     left: 0;
@@ -65,9 +65,9 @@ const StyledList = styled.ul`
 
 const StyledListItem = styled.li<{ rotateX?: number; rotateY?: number }>`
   transform: scaleZ(0.8) translateZ(0.2rem)
-    rotateX(${({ rotateX }) => rotateX + "deg" || 0});
+    rotateX(${({ rotateX }) => rotateX + 'deg' || 0});
   transform-origin: ${({ rotateX }) =>
-    rotateX ? (rotateX < 0 ? "80% center" : "20% center") : "center"};
+    rotateX ? (rotateX < 0 ? '80% center' : '20% center') : 'center'};
   transition: opacity 0.4s ease, transform 0.4s ease;
   scroll-snap-align: center;
   cursor: pointer;
@@ -85,6 +85,7 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
   lineRotation = 20,
   onChange,
 }) => {
+  const [isMouseDown, setMouseDown] = React.useState<boolean>(false);
   const [selectedDay, setSelectedDay] = React.useState<number>(1);
   const [selectedMonth, setSelectedMonth] = React.useState<number>(0);
   const [selectedYear, setSelectedYear] = React.useState<number>(minYear);
@@ -120,18 +121,18 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
   );
 
   const monthList = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
 
   const handleScrollDays = (e: React.UIEvent<HTMLUListElement, UIEvent>) => {
@@ -164,25 +165,35 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
       ? Math.min((selectedValue - elValue) * lineRotation, lineRotation * 3)
       : -Math.min((elValue - selectedValue) * lineRotation, lineRotation * 3);
 
+  const handleMouseMove = (e: any) => {
+    e.preventDefault();
+    if (isMouseDown) {
+      console.log(e.nativeEvent.Y);
+    }
+  };
   return (
-    <StyledContainer>
-      <StyledList onScroll={debounce(handleScrollDays, 100)}>
+    <StyledContainer
+      onMouseDown={() => setMouseDown(true)}
+      onMouseUp={() => setMouseDown(false)}
+    >
+      <StyledList onScroll={debounce(handleScrollDays, 350)}>
         {daysList.map((el, index) => (
           <StyledListItem
+            onMouseMove={handleMouseMove}
             data-value={index}
             onClick={handleScrollTo}
             rotateY={-10}
             rotateX={calculateRotation(el, selectedDay)}
-            key={"day-" + el}
+            key={'day-' + el}
           >
             {el}
           </StyledListItem>
         ))}
       </StyledList>
-      <StyledList onScroll={debounce(handleScrollMonth, 100)}>
+      <StyledList onScroll={debounce(handleScrollMonth, 350)}>
         {monthList.map((el, index) => (
           <StyledListItem
-            key={"month-" + el}
+            key={'month-' + el}
             data-value={index}
             onClick={handleScrollTo}
             rotateX={calculateRotation(index, selectedMonth)}
@@ -191,10 +202,10 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
           </StyledListItem>
         ))}
       </StyledList>
-      <StyledList onScroll={debounce(handleScrollYear, 100)}>
+      <StyledList onScroll={debounce(handleScrollYear, 350)}>
         {yearsList.map((el, index) => (
           <StyledListItem
-            key={"year-" + el}
+            key={'year-' + el}
             data-value={index}
             onClick={handleScrollTo}
             rotateY={10}
