@@ -64,12 +64,12 @@ const StyledList = styled.ul`
   }
 `;
 
-const StyledListItem = styled.li<{ rotate?: number }>`
-  transform: rotateX(${({ rotate }) => rotate + "deg" || 0});
-  transform-origin: ${({ rotate }) =>
-    rotate ? (rotate < 0 ? "80% center" : "20% center") : "center"};
+const StyledListItem = styled.li<{ rotateX?: number; rotateY?: number }>`
+  transform: scaleZ(0.8) translateZ(0.2rem)
+    rotateX(${({ rotateX }) => rotateX + "deg" || 0});
+  transform-origin: ${({ rotateX }) =>
+    rotateX ? (rotateX < 0 ? "80% center" : "20% center") : "center"};
   transition: opacity 0.4s ease, transform 0.4s ease;
-  /* transform-style: preserve-3d; */
   scroll-snap-align: center;
   cursor: pointer;
 `;
@@ -172,7 +172,8 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
           <StyledListItem
             data-value={index}
             onClick={handleScrollTo}
-            rotate={calculateRotation(el, selectedDay)}
+            rotateY={-10}
+            rotateX={calculateRotation(el, selectedDay)}
             key={"day-" + el}
           >
             {el}
@@ -185,7 +186,7 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
             key={"month-" + el}
             data-value={index}
             onClick={handleScrollTo}
-            rotate={calculateRotation(index, selectedMonth)}
+            rotateX={calculateRotation(index, selectedMonth)}
           >
             {el}
           </StyledListItem>
@@ -197,7 +198,8 @@ const AwesomeDatePicker: React.FC<AwesomeDatePickerProps> = ({
             key={"year-" + el}
             data-value={index}
             onClick={handleScrollTo}
-            rotate={calculateRotation(el, selectedYear)}
+            rotateY={10}
+            rotateX={calculateRotation(el, selectedYear)}
           >
             {el}
           </StyledListItem>
