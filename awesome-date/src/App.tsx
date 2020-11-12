@@ -9,7 +9,7 @@ function App() {
       <div className="App">
         <p>Current Picked Date</p>
         <p>{date?.toString()}</p>
-        <AwesomeDatePicker onChange={setDate} />
+        <AwesomeDatePicker minYear={1999} maxYear={2069} onChange={setDate} />
       </div>
     </>
   );
