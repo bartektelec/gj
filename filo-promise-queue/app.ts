@@ -6,7 +6,7 @@ interface FILOQueueForPromises {
 }
 
 interface PromiseResult {
-  timestamp: number;
+  promiseDoneAt: number;
   promiseResult: any;
   promiseId: number;
 }
@@ -21,18 +21,38 @@ type QueueCallback = (result: PromiseResult) => void;
 type PromiseFunctionWrapper = () => Promise<any>;
 
 class FILOQueueForPromises {
-  promises: QueueItem[] = []; // lista dodanych do kolejki, nie wywołanych promisów
-  results: PromiseResult[] = []; // lista wyników (error to też wynik) z wywołanych promisów, łącznie z timestampem wykonania
-  onResultFunc: QueueCallback = (result: PromiseResult) => {
-    // console.log(result.promiseResult);
+  private promises: QueueItem[] = []; // lista dodanych do kolejki, nie wywołanych promisów
+  private results: PromiseResult[] = []; // lista wyników (error to też wynik) z wywołanych promisów, łącznie z timestampem wykonania
+  onResultFunc: QueueCallback = ({
+    promiseDoneAt,
+    promiseId,
+    promiseResult,
+  }: PromiseResult) => {
+    console.log(`${promiseDoneAt}:[${promiseId}]-${promiseResult}`);
   };
   constructor(queueName: string) {
-    // queueName - nazwa kolejki w celach identyfikacyjnym
     this.queueName = queueName;
   }
 
-  add(functionWrapperForPromise: PromiseFunctionWrapper) {
-    // metoda, która dodaje do kolejki this.promises kolejną niewykonaną promisę
+  public getQueue() {
+    return this.promises;
+  }
+
+  public getNextInQueue() {
+    const [nextPromise] = this.promises;
+    return nextPromise;
+  }
+
+  public getResults() {
+    return this.results;
+  }
+
+  public getLastResult() {
+    const [lastResult] = this.results;
+    return lastResult;
+  }
+
+  public add(functionWrapperForPromise: PromiseFunctionWrapper) {
     const nextIdNumber: number = this.promises.length + this.results.length;
     this.promises.push({
       id: nextIdNumber,
@@ -40,32 +60,31 @@ class FILOQueueForPromises {
     });
   }
 
-  async runNext() {
-    // metoda, która odpowiada za uruchamianie ostatnio dodanej do kolejki promisy
+  public async runNext() {
     if (!this.promises.length) throw new Error('No items in the queue');
-    const [firstQueueItem] = this.promises;
+
+    const firstQueueItem = this.getNextInQueue();
 
     const result: Partial<PromiseResult> = {
-      promiseId: firstQueueItem.id,
+      promiseResult: null,
     };
+
     try {
       const promiseResult = await firstQueueItem.function();
       result.promiseResult = promiseResult;
     } catch (error) {
       result.promiseResult = error;
     } finally {
-      result.timestamp = Date.now();
+      result.promiseId = firstQueueItem.id;
+      result.promiseDoneAt = Date.now();
+      this.promises.shift();
+      this.results.unshift(result as PromiseResult);
+      this.onResultFunc(result as PromiseResult);
     }
-
-    this.promises.shift();
-    this.results.unshift(result as PromiseResult);
-    this.onResultFunc(result as PromiseResult);
   }
 
-  onResult(callback: QueueCallback) {
+  public onResult(callback: QueueCallback) {
     this.onResultFunc = callback;
-    // metoda, wywołująca się po ukończeniu każdej promisy z kolejki z argumentem callback
-    // który działa tak -> callback(promiseId, promiseResult, promiseDoneAt)
   }
 }
 
