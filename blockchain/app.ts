@@ -7,7 +7,7 @@
 // np np dokładnie 40 stringów z lorem ipsum
 
 // SECTION TASK
-import { lib, SHA256 } from 'crypto-js';
+import { SHA256 } from 'crypto-js';
 
 // blok przechowywuje dane mu podane, swoj hash i hash poprzedniego bloku
 // blockchain nie pozwala na edytowanie wartosci blokow i ich usuwanie z blockchainu
